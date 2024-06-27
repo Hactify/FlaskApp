@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://kit.fontawesome.com/a2c68f0716.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../static/css/new_campaign.css">
+{% endblock %}
+{% block content %}
+<h1>New Campaign</h1>
+<form method="POST">
+  <label for="domain">Domain:</label>
+  <input type="text" id="domain" name="domain" required>
+  <button type="submit">Submit</button>
+</form>
+
+<div>
+  Or enter <a href="manual_campaign">manually</a>
+</div>
+{% endblock %}

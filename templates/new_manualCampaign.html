@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block head %}
+<script src="https://kit.fontawesome.com/a2c68f0716.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../static/css/manual.css">
+{% endblock %}
+{% block content %}
+<h2>CSV Upload</h2>
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+        {{ form.campaign_name.label }}
+        {{ form.campaign_name(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.csv_file.label }}
+        {{ form.csv_file(class="form-control-file") }}
+        {% if form.csv_file.errors %}
+            <small class="form-text text-danger">
+                {% for error in form.csv_file.errors %}
+                    <span>{{ error }}</span><br>
+                {% endfor %}
+            </small>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
