@@ -309,7 +309,7 @@ def send_email(subject, body, to_email):
 def send_email_route():
     if request.method == "POST":
         subject = "Important Update"
-        body = generate_email(prompt)
+        body = generate_email("Dear User")
         to_email = request.form['to_email']
         try:
             send_email(subject, body, to_email)
