@@ -1,3 +1,4 @@
+# ***************** importing neccessary libraries ****************
 import csv
 import io
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
@@ -12,25 +13,21 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 import email_validator
 from gather_emails import google_dork, hunter_io, filter_alive_emails
 import secrets
-import torch
-import pandas as pd
-from transformers import GPT2Tokenizer, GPT2LMHeadModel
-import random
 import smtplib
 from email.mime.text import MIMEText
+from ML.generatePhishingMail import generate_email
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv()                           # loading environment data
+mySecretKey = secrets.token_hex(16)     # creating unique secret key
 
 
-mySecretKey = secrets.token_hex(16)
-
+# ************************ Form classes **********************************
 class CSVUploadForm(FlaskForm):
     campaign_name = StringField('Campaign Name', validators=[DataRequired()])
     csv_file = FileField('CSV File', validators=[FileRequired()])
     submit = SubmitField('Submit')
-
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -50,6 +47,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 
+# Initializing app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = mySecretKey  # Set your secret key here
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
@@ -61,26 +59,38 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 
-# Models
+# **************************** Models *****************************
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    campaigns = db.relationship('Campaign', backref='owner', lazy=True)
 
 class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
     target_domain = db.Column(db.String(150))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Email(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'))
     email_address = db.Column(db.String(150))
+    first_name = db.Column(db.String(150), nullable=True)
+    last_name = db.Column(db.String(150), nullable=True)
+    position = db.Column(db.String(150), nullable=True)
+    seniority = db.Column(db.String(150), nullable=True)
+    department = db.Column(db.String(150), nullable=True)
+    linkedin = db.Column(db.String(250), nullable=True)
+    twitter = db.Column(db.String(250), nullable=True)
+    phone_number = db.Column(db.String(50), nullable=True)
     is_alive = db.Column(db.Boolean)
 
 with app.app_context():
     db.create_all()
 
+
+# ************************ routes **************************
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -123,7 +133,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    campaigns = Campaign.query.all()
+    campaigns = Campaign.query.filter_by(user_id=current_user.id).all()
     return render_template('dashboard.html', campaigns=campaigns, email=current_user.email)
 
 @app.route('/new_campaign', methods=['GET', 'POST'])
@@ -131,21 +141,73 @@ def dashboard():
 def new_campaign():
     if request.method == 'POST':
         domain = request.form['domain']
-        emails = google_dork(domain)
-        emails.update(hunter_io(domain))
-        alive_emails = filter_alive_emails(emails)
+        
+        # Fetch emails using google_dork and hunter_io
+        google_emails = google_dork(domain)
+        hunter_emails = hunter_io(domain)
+        
+        # Combine emails into a dictionary to ensure no duplicates
+        email_dict = {}
+        
+        # Add google_dork emails to the dictionary
+        for email in google_emails:
+            email_dict[email] = {
+                'email_address': email,
+                'first_name': None,
+                'last_name': None,
+                'position': None,
+                'seniority': None,
+                'department': None,
+                'linkedin': None,
+                'twitter': None,
+                'phone_number': None,
+                'is_alive': False
+            }
+        
+        # Update the dictionary with hunter_io emails
+        for email in hunter_emails:
+            email_address = email['email_address']
+            email_dict[email_address] = email
+        
+        # Convert the dictionary values to a list for filtering
+        email_list = list(email_dict.values())
+        
+        # Filter alive emails
+        # alive_emails = filter_alive_emails(email_list)
 
-        # Save campaign and emails to database
-        campaign = Campaign(name=domain, target_domain=domain)
+        # Save campaign to the database
+        campaign = Campaign(name=domain, target_domain=domain, user_id=current_user.id)
         db.session.add(campaign)
         db.session.commit()
 
-        for email in alive_emails:
-            db.session.add(Email(campaign_id=campaign.id, email_address=email, is_alive=True))
+        # Save emails to the database
+        for email in email_list:
+            new_email = Email(
+                campaign_id=campaign.id,
+                email_address=email['email_address'],
+                first_name=email.get('first_name'),
+                last_name=email.get('last_name'),
+                position=email.get('position'),
+                seniority=email.get('seniority'),
+                department=email.get('department'),
+                linkedin=email.get('linkedin'),
+                twitter=email.get('twitter'),
+                phone_number=email.get('phone_number'),
+                is_alive=email['is_alive']
+            )
+            db.session.add(new_email)
         db.session.commit()
         
         return redirect(url_for('dashboard'))
     return render_template('new_campaign.html')
+
+# ********************************
+# csv files format
+# email_address,first_name,last_name,position,seniority,department,linkedin,twitter,phone_number
+# ********************************
+# Setup logging
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/manual_campaign', methods=['GET', 'POST'])
 @login_required
@@ -154,31 +216,48 @@ def manual_campaign():
     if form.validate_on_submit():
         campaign_name = form.campaign_name.data
         csv_file = form.csv_file.data
+        logging.debug(f"Campaign Name: {campaign_name}")
+        logging.debug(f"CSV File: {csv_file}")
+        
         if campaign_name:
-            campaign = Campaign(name=campaign_name)
+            campaign = Campaign(name=campaign_name, user_id = current_user.id)
             db.session.add(campaign)
             db.session.commit()
+            logging.debug(f"Campaign created with ID: {campaign.id}")
 
         if csv_file:
-            # Process the uploaded CSV file
-            email_list = []
             try:
                 stream = io.StringIO(csv_file.stream.read().decode("UTF8"), newline=None)
-                csv_reader = csv.reader(stream)
-                for row in csv_reader:
-                    email_list.extend(row)  # Assuming one email per row
+                csv_reader = csv.DictReader(stream)
+                email_list = []
 
-                for email in email_list:
-                    db.session.add(Email(campaign_id=campaign.id, email_address=email, is_alive=True))
+                for row in csv_reader:
+                    logging.debug(f"CSV Row: {row}")
+                    email = Email(
+                        campaign_id=campaign.id,
+                        email_address=row.get('email_address'),
+                        first_name=row.get('first_name'),
+                        last_name=row.get('last_name'),
+                        position=row.get('position'),
+                        seniority=row.get('seniority'),
+                        department=row.get('department'),
+                        linkedin=row.get('linkedin'),
+                        twitter=row.get('twitter'),
+                        phone_number=row.get('phone_number'),
+                        is_alive=True
+                    )
+                    db.session.add(email)
+                    email_list.append(email.email_address)
                 db.session.commit()
 
-            except Exception as e:
-                flash(f"Error processing CSV file: {str(e)}", 'danger')
-                return redirect(url_for('new_campaign'))
+                logging.debug(f"Emails added: {email_list}")
+                flash(f"Campaign '{campaign_name}' created with uploaded emails.", 'info')
+                return redirect(url_for('dashboard'))
 
-            # Display the emails (for demonstration)
-            flash(f"Uploaded emails: {email_list}", 'info')
-            return redirect(url_for('dashboard'))
+            except Exception as e:
+                logging.error(f"Error processing CSV file: {e}")
+                flash(f"Error processing CSV file: {str(e)}", 'danger')
+                return redirect(url_for('manual_campaign'))
 
     return render_template('new_manualCampaign.html', form=form)
 
@@ -190,44 +269,8 @@ def view_campaign(campaign_id):
     return render_template('view_campaign.html', campaign=campaign, emails=emails)
 
 
-links_df=pd.read_csv("phishing_links.csv")
-links=links_df['url'].tolist()
-
-# Load the tokenizer and model
-tokenizer = GPT2Tokenizer.from_pretrained("phishing_email_generator")
-model = GPT2LMHeadModel.from_pretrained("phishing_email_generator")
-
-# Move the model to the appropriate device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model.to(device)
-
-def generate_email(prompt):
-    inputs = tokenizer.encode(prompt, return_tensors='pt', padding=True, truncation=True)
-    inputs = inputs.to(device)  # Move inputs to the same device as the model
-    
-    outputs = model.generate(
-        inputs,
-        max_length=200,
-        num_return_sequences=1,
-        pad_token_id=tokenizer.eos_token_id,
-        do_sample=True,
-        temperature=0.7,  # Controls the randomness of predictions (lower = more deterministic)
-        top_k=50,  # Limits the sampling pool to top_k tokens
-        top_p=0.9  # Nucleus sampling: samples from the smallest possible set of tokens whose cumulative probability exceeds top_p
-    )
-    
-    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    
-    # Select a random link from the dataset (assuming links list is loaded)
-    random_link = random.choice(links)
-    
-    # Append the random link and "Thank you" to the generated email
-    final_email = f"{generated_text}\n\n{random_link}\n\nThank you."
-    
-    return final_email
-
-prompt = "Dear user,"
-print(generate_email(prompt))
+# prompt = "Dear user,"
+# print(generate_email(prompt))
 
 # Define a route for generating emails
 @app.route('/generate-email', methods=['POST'])
@@ -284,7 +327,13 @@ def send_single_email(user_id):
     if email:
         subject = "Important Update"
         to_email = email.email_address
-        body = generate_email(f"Dear {email.email_address}")
+        if (email.first_name and email.last_name and email.position):
+            body = generate_email(f"Dear {email.first_name} {email.last_name}, {email.position}")
+        elif (email.first_name and email.last_name and not email.position):
+            body = generate_email(f"Dear {email.first_name} {email.last_name}")
+        else:
+            body = generate_email(f"Dear User")
+
         try:
             send_email(subject, body, to_email)
             flash(f"Email sent to {to_email}", 'success')
@@ -305,7 +354,12 @@ def send_bulk_email(campaign_id):
     errors = []
     
     for email in emails:
-        body = generate_email(f"Dear {email.email_address}")
+        if (email.first_name and email.last_name and email.position):
+            body = generate_email(f"Dear {email.first_name} {email.last_name}, {email.position}")
+        elif (email.first_name and email.last_name and not email.position):
+            body = generate_email(f"Dear {email.first_name} {email.last_name}")
+        else:
+            body = generate_email(f"Dear User")
         try:
             send_email(subject, body, email.email_address)
         except Exception as e:
@@ -318,5 +372,7 @@ def send_bulk_email(campaign_id):
 
     return redirect(url_for('dashboard'))
 
+
+# running our flask app
 if __name__ == '__main__':
     app.run(debug=True)

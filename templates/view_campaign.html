@@ -1,12 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>View Campaign: {{ campaign.name }}</h1>
-<ul>
-  {% for email in emails %}
-    <li>{{ email.email_address }} - {{ 'Alive' if email.is_alive else 'Dead' }}</li>
-    <form action="{{ url_for('send_single_email', user_id=email.id) }}" method="post" style="display:inline;">
-      <button type="submit">Send Email</button>
-  </form>
-  {% endfor %}
-</ul>
+<h1>Campaign: {{ campaign.name }}</h1>
+<h2>Target Domain: {{ campaign.target_domain }}</h2>
+
+<form action="{{ url_for('send_bulk_email', campaign_id=campaign.id) }}" method="POST">
+    <button type="submit">Send Bulk Email</button>
+</form>
+
+<h3>Emails:</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Email Address</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Position</th>
+            <th>Seniority</th>
+            <th>Department</th>
+            <th>LinkedIn</th>
+            <th>Twitter</th>
+            <th>Phone Number</th>
+            <th>Is Alive</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for email in emails %}
+        <tr>
+            <td>{{ email.email_address }}</td>
+            <td>{{ email.first_name }}</td>
+            <td>{{ email.last_name }}</td>
+            <td>{{ email.position }}</td>
+            <td>{{ email.seniority }}</td>
+            <td>{{ email.department }}</td>
+            <td>{{ email.linkedin }}</td>
+            <td>{{ email.twitter }}</td>
+            <td>{{ email.phone_number }}</td>
+            <td>{{ 'Yes' if email.is_alive else 'No' }}</td>
+            <td>
+                <form action="{{ url_for('send_single_email', user_id=email.id) }}" method="POST">
+                    <button type="submit">Send Email</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

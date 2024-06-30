@@ -4,27 +4,20 @@
 <link rel="stylesheet" href="../static/css/manual.css">
 {% endblock %}
 {% block content %}
-<h2>CSV Upload</h2>
-<form method="POST" enctype="multipart/form-data">
+<h1>Create Manual Campaign</h1>
+
+<form action="{{ url_for('manual_campaign') }}" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-
-    <div class="form-group">
-        {{ form.campaign_name.label }}
-        {{ form.campaign_name(class="form-control") }}
-    </div>
-
-    <div class="form-group">
-        {{ form.csv_file.label }}
-        {{ form.csv_file(class="form-control-file") }}
-        {% if form.csv_file.errors %}
-            <small class="form-text text-danger">
-                {% for error in form.csv_file.errors %}
-                    <span>{{ error }}</span><br>
-                {% endfor %}
-            </small>
-        {% endif %}
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <p>
+        {{ form.campaign_name.label }}<br>
+        {{ form.campaign_name(size=32) }}
+    </p>
+    <p>
+        {{ form.csv_file.label }}<br>
+        {{ form.csv_file() }}
+    </p>
+    <p>
+        <button type="submit">Upload</button>
+    </p>
 </form>
 {% endblock %}
