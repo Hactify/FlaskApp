@@ -20,9 +20,38 @@ body {
 }
 
 header {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+#logo{
     font-weight: bolder;
     font-size: 3rem;
-    padding: 2rem;
+}
+
+#userInfo{
+    font-size: 1.5rem;
+    display: flex;
+    padding: 1rem;
+    gap: 2rem;
+}
+
+#logoutBtn{
+    cursor: pointer;
+    height: fit-content;
+    width: fit-content;
+    padding: 0.5rem;
+    font-size: medium;
+    transition: all 250ms;
+    border-radius: 0.2rem;
+}
+
+#logoutBtn:hover{
+    background-color: #8905ff;
+    color: white;
+    transition: all 250ms;
+    border:1px solid white
 }
 
 .headline {
@@ -58,4 +87,72 @@ header {
 .fa-solid {
     font-size: 1.2em;
     vertical-align: middle;
+}
+section.navbar{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+a{
+    margin: 2rem;
+    font-size: 25;
+    text-decoration: none;
+    color: white;
+}
+a:hover{
+    color: #8905ff;
+}
+.option-1{
+    display: flex;
+    padding: 3rem;
+    justify-content: right;
+}
+h1{
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+.domain-search{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.domain{
+    font-size: 40;
+    padding-right: 2vh;
+}
+input#domain{
+    width: 65vh;
+    height: 6vh;
+    border: none;
+    border-radius: 0.3rem;
+    padding-left: 0.6rem;
+    font-size: medium;
+}
+button.domain-search-btn{
+    width: 15vh;
+    height: 6vh;
+    margin-left: 2vh;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+button.domain-search-btn:hover{
+    color: white;
+    background-color: black;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:2rem;
+}
+
+#manual{
+    margin:5px;
+    color:#8905ff
 }

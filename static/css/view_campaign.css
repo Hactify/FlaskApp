@@ -60,64 +60,7 @@ h1 {
     padding-bottom: 5vh;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color:#8905ff;
-}
-
-h2 {
-    font-size: 2rem;
-    margin: 1rem;
-    text-align: left;
-    padding-left: 2rem;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-left: 2rem;
-    margin: 5vh;
-}
-
-li {
-    margin: 0.2rem 4rem;
-}
-
-a {
-    text-decoration: none;
-    color: var(--dark-content-color);
-    font-size: 1.5rem;
-    transition: all 250ms;
-}
-
-a:hover {
-    color: #8905ff;
-    transition: all 250ms;
-}
-
-.logout {
-    text-align: left;
-    padding-left: 2rem;
-    margin: 2rem 0;
-}
-
-.logout a {
-    font-size: 1.5rem;
-    background-color: #8905ff;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.2rem;
-    transition: all 250ms;
-}
-
-.logout a:hover {
-    background-color: white;
-    color: #8905ff;
-    border: 1px solid #8905ff;
-    transition: all 250ms;
+    justify-content: center
 }
 section.navbar{
     display: grid;
@@ -137,7 +80,6 @@ a:hover{
     padding: 3rem;
     justify-content: right;
 }
-a.logout-btn{
-    display: flex;
-    justify-content: right
+ul{
+    margin: 7vh;
 }

@@ -21,42 +21,82 @@
         }
 
         header {
+            color: #8905ff;
             font-weight: bolder;
             font-size: 3rem;
             padding: 2rem;
         }
 
-        .headline {
-            font-weight: bold;
-            font-size: 7rem;
-            margin: 1rem 0 0 4rem;
-        }
-
-        #mainContainer {
+        section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
-            padding: 4rem 2rem;
-            text-align: center;
+            justify-content: center;
+            background: transparent;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.136); /* Translucent white */
+            padding: 2.5rem;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+            max-height: auto;
         }
-
-        #getStarted {
-            padding: 1rem 2rem;
-            font-size: 1.5rem;
-            background-color: #8905ff;
-            color: white;
+        
+        form {
+            width: 100%;
+        }
+        
+        .input-field p {
+            margin-bottom: 1rem;
+        }
+        
+        .login-btn p{
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        a {
+            margin-top: 1rem;
+            color: var(--dark-content-color);
+        }
+        input#email{
+            width: 100%;
+            height: 4vh;
+            margin-top: 0.5rem;
+            margin-bottom: 0.7rem;
+            border-radius: 0.3rem;
+            padding-left: 0.5rem;
             border: none;
-            border-radius: 0.2rem;
+        }
+        input#password{
+            width: 100%;
+            height: 4vh;
+            margin-top: 0.5rem;
+            margin-bottom: 0.7rem;
+            border-radius: 0.3rem;
+            padding-left: 0.5rem;
+            border: none;
+        }
+        input#confirm_password{
+            width: 100%;
+            height: 4vh;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.3rem;
+            padding-left: 0.5rem;
+            border: none;
+        }
+        input#submit{
+            width: 100%;
+            height: 5.6vh;
+            border-radius: 0.3rem;
+            font-weight: bold;
+            border: none;
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
+            color: black;
         }
-
-        #getStarted:hover {
-            background-color: #6e039e;
-        }
-
-        .fa-solid {
-            font-size: 1.2em;
-            vertical-align: middle;
+        input#submit:hover{
+            background-color: black;
+            color: white;
         }

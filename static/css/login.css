@@ -15,11 +15,16 @@
 }
 
 body {
+    /* background-image: url(https://craftwork-images.b-cdn.net/wp-content/uploads/edd/2023/07/Property-1dark-Property-212.png);
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    background-size: cover; */
     background-color: var(--dark-bg-color);
     color: var(--dark-content-color);
 }
 
 header {
+    color: #8905ff;
     font-weight: bolder;
     font-size: 3rem;
     padding: 2rem;
@@ -30,7 +35,6 @@ header {
     font-size: 7rem;
     margin: 1rem 0 0 4rem;
 }
-
 #mainContainer {
     display: flex;
     flex-direction: column;
@@ -58,4 +62,66 @@ header {
 .fa-solid {
     font-size: 1.2em;
     vertical-align: middle;
+}
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.136); /* Translucent white */
+    padding: 2.5rem;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+    min-height: auto;
+}
+
+form {
+    width: 100%;
+}
+
+.input-field p {
+    margin-bottom: 1rem;
+}
+
+.login-btn p{
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+a {
+    margin-top: 1rem;
+    color: var(--dark-content-color);
+}
+input#email{
+    width: 100%;
+    height: 4vh;
+    margin-top: 0.5rem;
+    padding-left: 0.5rem;
+    border-radius: 0.3rem;
+    border: none;
+}
+input#password{
+    width: 100%;
+    height: 4vh;
+    margin-top: 0.5rem;
+    border-radius: 0.3rem;
+    padding-left: 0.5rem;
+    border: none;
+}
+input#submit{
+    width: 100%;
+    height: 5.6vh;
+    border-radius: 0.3rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    color: black;
+}
+input#submit:hover{
+    background-color: black;
+    color: white;
 }

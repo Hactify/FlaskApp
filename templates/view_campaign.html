@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block head %}
+<script src="https://kit.fontawesome.com/a2c68f0716.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../static/css/view_campaign.css">
+{% endblock %}
 {% block content %}
 <h1>Campaign: {{ campaign.name }}</h1>
 <h2>Target Domain: {{ campaign.target_domain }}</h2>
