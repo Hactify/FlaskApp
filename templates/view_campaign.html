@@ -5,6 +5,7 @@
 {% endblock %}
 {% block content %}
 <h1>Campaign: {{ campaign.name }}</h1>
+<div id="contentContainer">
 <h2>Target Domain: {{ campaign.target_domain }}</h2>
 
 <form action="{{ url_for('send_bulk_email', campaign_id=campaign.id) }}" method="POST">
@@ -50,5 +51,7 @@
         {% endfor %}
     </tbody>
 </table>
+
+</div>
 
 {% endblock %}

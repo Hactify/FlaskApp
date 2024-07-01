@@ -91,3 +91,23 @@ a:hover{
 ul{
     margin: 7vh;
 }
+
+#contentContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin:0 2rem;
+}
+
+table{
+    overflow-x: scroll;
+    /* table-layout: fixed; */
+    width: 100%;
+    border-collapse: collapse;
+    /* border: 3px solid #8905ff; */
+}
+
+tr th, tr td{
+    padding: 5px;
+}
+

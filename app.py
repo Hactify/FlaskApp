@@ -161,7 +161,7 @@ def new_campaign():
                 'linkedin': None,
                 'twitter': None,
                 'phone_number': None,
-                'is_alive': False
+                'is_alive': True
             }
         
         # Update the dictionary with hunter_io emails

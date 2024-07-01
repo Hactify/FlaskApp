@@ -43,7 +43,8 @@ def hunter_io(domain):
             'linkedin': email_data.get('linkedin'),
             'twitter': email_data.get('twitter'),
             'phone_number': email_data.get('phone_number'),
-            'is_alive': verify_email_with_hunter(email_data['value'], api_key)
+            # 'is_alive': verify_email_with_hunter(email_data['value'], api_key)
+            'is_alive': True
         }
         emails.append(email_info)
     return emails
@@ -67,23 +68,3 @@ def filter_alive_emails(emails):
         # if verify_email_with_hunter(email['email_address'], "4d64ffa36f57f4345a0a246b37c91a93141ef27f"):
         alive_emails.append(email)
     return alive_emails
-
-
-# def save_emails_to_db(emails, campaign_id):
-#     for email_data in emails:
-#         email_dict = dict(email_data)
-#         email = Email(
-#             campaign_id=campaign_id,
-#             email_address=email_dict['email_address'],
-#             first_name=email_dict.get('first_name'),
-#             last_name=email_dict.get('last_name'),
-#             position=email_dict.get('position'),
-#             seniority=email_dict.get('seniority'),
-#             department=email_dict.get('department'),
-#             linkedin=email_dict.get('linkedin'),
-#             twitter=email_dict.get('twitter'),
-#             phone_number=email_dict.get('phone_number'),
-#             is_alive=email_dict.get('is_alive')
-#         )
-#         db.session.add(email)
-#     db.session.commit()
