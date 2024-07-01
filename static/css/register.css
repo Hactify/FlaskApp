@@ -14,6 +14,14 @@
             --light-content-color: black;
         }
 
+        .alert{
+            background-color: #8905ff;
+            color: white;
+            padding: 1rem;
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+
         body {
             background-color: var(--dark-bg-color);
             color: var(--dark-content-color);

@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="../static/css/manual.css">
 {% endblock %}
 {% block content %}
+<div id="mainContainer">
 <h1>Create Manual Campaign</h1>
 
 <form action="{{ url_for('manual_campaign') }}" method="post" enctype="multipart/form-data">
@@ -17,7 +18,8 @@
         {{ form.csv_file() }}
     </p>
     <p>
-        <button type="submit">Upload</button>
+        <button id="submitBtn" type="submit">Upload</button>
     </p>
 </form>
+</div>
 {% endblock %}

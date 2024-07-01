@@ -125,3 +125,11 @@ input#submit:hover{
     background-color: black;
     color: white;
 }
+
+.alert{
+    background-color: #8905ff;
+    color: white;
+    padding: 1rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+}

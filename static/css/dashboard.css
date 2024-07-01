@@ -83,7 +83,7 @@ ul {
 }
 
 li {
-    margin: 0.2rem 4rem;
+    margin: 0.5rem 4rem;
 }
 
 a {
@@ -140,4 +140,12 @@ a:hover{
 a.logout-btn{
     display: flex;
     justify-content: right
+}
+
+.alert{
+    background-color: #8905ff;
+    color: white;
+    padding: 1rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
 }
