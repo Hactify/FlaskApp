@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/login.css">
+    <script src="https://kit.fontawesome.com/a2c68f0716.js" crossorigin="anonymous"></script>
     <title>Login</title>
 </head>
 <body>
@@ -16,28 +17,35 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
-    <h2>Login</h2>
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}<br>
-            {% for error in form.email.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
-            {% for error in form.password.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.remember() }} {{ form.remember.label }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <a href="{{ url_for('register') }}">Register</a>
+    <header>
+        Recon <i class="fa-solid fa-shield-halved"></i>
+    </header>
+    <section>
+        <h2>Login</h2>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="input-field">
+                <p>
+                    {{ form.email.label }}<br>
+                    {{ form.email(size=32) }}<br>
+                    {% for error in form.email.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32) }}<br>
+                    {% for error in form.password.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.remember() }} {{ form.remember.label }}
+                </p>
+            </div>
+            <p class="login-btn">{{ form.submit() }}</p>
+        </form>
+        <a href="{{ url_for('register') }}">Register</a>
+    </section>
 </body>
 </html>

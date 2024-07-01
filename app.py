@@ -134,7 +134,7 @@ def logout():
 @login_required
 def dashboard():
     campaigns = Campaign.query.filter_by(user_id=current_user.id).all()
-    return render_template('dashboard.html', campaigns=campaigns, email=current_user.email)
+    return render_template('dashboard.html', campaigns=campaigns, email=current_user.email, current_user=current_user)
 
 @app.route('/new_campaign', methods=['GET', 'POST'])
 @login_required
@@ -199,7 +199,7 @@ def new_campaign():
         db.session.commit()
         
         return redirect(url_for('dashboard'))
-    return render_template('new_campaign.html')
+    return render_template('new_campaign.html',current_user=current_user)
 
 # ********************************
 # csv files format
@@ -259,14 +259,14 @@ def manual_campaign():
                 flash(f"Error processing CSV file: {str(e)}", 'danger')
                 return redirect(url_for('manual_campaign'))
 
-    return render_template('new_manualCampaign.html', form=form)
+    return render_template('new_manualCampaign.html', form=form, current_user=current_user)
 
 @app.route('/view_campaign/<int:campaign_id>')
 @login_required
 def view_campaign(campaign_id):
     campaign = Campaign.query.get(campaign_id)
     emails = Email.query.filter_by(campaign_id=campaign_id).all()
-    return render_template('view_campaign.html', campaign=campaign, emails=emails)
+    return render_template('view_campaign.html', campaign=campaign, emails=emails, current_user=current_user)
 
 
 # prompt = "Dear user,"
@@ -319,7 +319,7 @@ def send_email_route():
 
         return redirect(url_for('dashboard'))
     
-    return render_template('email_form.html')
+    return render_template('email_form.html', current_user=current_user)
 
 @app.route('/send_single_email/<int:user_id>', methods=['POST'])
 def send_single_email(user_id):

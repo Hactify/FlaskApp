@@ -4,14 +4,17 @@
 <link rel="stylesheet" href="../static/css/new_campaign.css">
 {% endblock %}
 {% block content %}
-<h1>New Campaign</h1>
-<form method="POST">
-  <label for="domain">Domain:</label>
-  <input type="text" id="domain" name="domain" required>
-  <button type="submit">Submit</button>
-</form>
-
-<div>
-  Or enter <a href="manual_campaign">manually</a>
+<div class="content">
+  <h1>New Campaign</h1>
+  <form method="POST">
+    <div class="domain-search">
+      <label class="domain" for="domain">Domain:</label>
+      <input type="text" id="domain" name="domain" required>
+      <button class="domain-search-btn" type="submit">Submit</button>
+    </div>
+    <div>
+      Or enter<a id="manual" href="/manual_campaign">Manually</a>
+    </div>
+  </form>
 </div>
 {% endblock %}
